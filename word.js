@@ -10,19 +10,25 @@ function Word(val){
     }
   }
   this.checkIfLetterFound = function(guess){
+    var check = 0;
     for(var i = 0; i < this.letters.length; i++){
-      if(letters[i].value === guess){
-        letters.[i].appear = true;
+      if(this.letters[i].value === guess){
+        this.letters[i].appear = true;
+        check++
       }
     }
+    return check;
   }
-  this.didWeFindTheWord = this.letters.every(function (curLetter){
-    return curLetter.appear
-  });
+  this.didWeFindTheWord = function (){
+    this.found = this.letters.every(function(element, index, array){
+      return (element.appear)
+    });
+    return this.found
+  }
   this.wordRender = function() {
     var str = ""
     for(var i = 0; i < this.letters.length; i++){
-      str.concat(this.letters[i].letterRender)
+      str += this.letters[i].letterRender()
     }
     return str
   }

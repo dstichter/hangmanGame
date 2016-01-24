@@ -3,10 +3,10 @@ function Letter(val){
   this.appear = false;
   this.letterRender = function () {
     if(this.appear){
-      return this.value
+      return this.value + " "
     }
     else {
-      return " ";
+      return "  ";
     }
   }
 }
