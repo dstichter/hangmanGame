@@ -1,9 +1,14 @@
 var prompt = require('prompt');
 var Word = require('./word.js')
+var ascii = require('./asciiHangman.js')
+var fs = require('fs');
+var words = []
+fs.readFile('wordBank.txt', 'utf8', function (err, data){
+  words = data.split(/\r?\n/);
+});
 
 prompt.start()
 
-var words = ["crypt","pterodactyl", "vinyl"]
 function Game() {
   this.wordBank = words;
   this.guessesRemaining = 10;
@@ -16,22 +21,22 @@ function Game() {
     for(var i = 0; i < this.wordBank[random].length; i++){
       this.currentWrdDisplay += "_ ";
     }
+    ascii(10);
+    console.log(this.currentWrdDisplay)
     this.keepPrompting();
   }
   this.keepPrompting = function(){
     var self = this;
-    console.log(self.currentWrdDisplay)
     prompt.get(['guess'], function (err, result){
-      if(self.currentWrd.checkIfLetterFound(result.guess) === 0){
-        self.guessesRemaining--;
-        console.log("No Dice")
-      }
-      console.log(self.currentWrd.wordRender())
-      console.log(self.currentWrdDisplay)
-
-      console.log()
       if(result.guess === "stop"){
-
+        return ""
+      }
+      else if(self.currentWrd.checkIfLetterFound(result.guess) === 0){
+        self.guessesRemaining--;
+        ascii(self.guessesRemaining)
+        console.log(self.currentWrd.wordRender())
+        console.log(self.currentWrdDisplay)
+        console.log("No Dice")
       }
       else if(self.currentWrd.didWeFindTheWord()){
         console.log("You Win!  Play Again?")
@@ -42,8 +47,11 @@ function Game() {
           }
         });
       }
-      else if(self.guessesRemaining > 0){
-        console.log(self.guessesRemaining)
+      if(self.guessesRemaining > 0){
+        ascii(self.guessesRemaining)
+        console.log(self.currentWrd.wordRender())
+        console.log(self.currentWrdDisplay)
+        console.log("Guesses Remaining: " + self.guessesRemaining)
         self.keepPrompting();
       }
       else{
@@ -53,5 +61,8 @@ function Game() {
 
   }
 }
-var game = new Game()
-game.startGame()
+prompt.get(['Press Any Key To Start'], function (err, result){
+  var game = new Game()
+  game.startGame()
+});
+
